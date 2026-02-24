@@ -1,6 +1,5 @@
 import type { RemovableRef } from '@vueuse/core'
 import type { Account } from '~/types/Account'
-import { AccountType } from '~/types/AccountType'
 
 interface AccountStore {
   accounts: RemovableRef<Account[]>,
@@ -14,7 +13,7 @@ export const useAccountStore = defineStore('account', {
   },
   actions: {
     updateAccount(index: number, account: Account): void {
-      this.accounts[index] = { ...account }
+      this.accounts[index] = {...account}
     },
 
     deleteAccount(index: number): void {
