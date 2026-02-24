@@ -1,6 +1,9 @@
+import type { AccountType } from '~/types/AccountType'
+import type { Tag } from '~/types/Tag'
+
 export interface Account {
-  tags: string[],
-  type: AccountType,
-  login: string,
-  password: string,
+  tags: Tag[]
+  type: AccountType
+  login: string
+  password: string | null
 }

@@ -6,8 +6,6 @@ interface AccountStore {
   accounts: RemovableRef<Account[]>,
 }
 
-const DEFAULT_ACCOUNT_TYPE = AccountType.LOCAL
-
 export const useAccountStore = defineStore('account', {
   state: (): AccountStore => {
     return {
@@ -15,8 +13,8 @@ export const useAccountStore = defineStore('account', {
     }
   },
   actions: {
-    addEmptyAccount(): void {
-      this.accounts.push({tags: [], type: DEFAULT_ACCOUNT_TYPE, login: '', password: ''})
+    updateAccount(index: number, account: Account): void {
+      this.accounts[index] = { ...account }
     },
 
     deleteAccount(index: number): void {

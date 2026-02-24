@@ -1,4 +1,4 @@
 export enum AccountType {
-  LDAP,
-  LOCAL,
+  LDAP = 'LDAP',
+  LOCAL = 'Локальная',
 }
