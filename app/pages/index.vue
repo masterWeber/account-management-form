@@ -107,6 +107,7 @@ import { z } from 'zod'
 import type { TableColumn } from '@nuxt/ui/components/Table.vue'
 import type { Account } from '~/types/Account'
 import { AccountType } from '~/types/AccountType'
+import type { Tag } from '~/types/Tag'
 
 const DEFAULT_ACCOUNT_TYPE = AccountType.LOCAL
 
@@ -142,9 +143,9 @@ interface FormState {
 }
 
 const formState = reactive<FormState>({
-  rows: accounts.value.map(a => ({
+  rows: accounts.value.map((a: Account) => ({
     ...a,
-    tagsString: a.tags.map(t => t.text).join('; '),
+    tagsString: a.tags.map((t: Tag) => t.text).join('; '),
     touched: {},
   })),
 })
