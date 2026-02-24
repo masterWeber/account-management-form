@@ -7,11 +7,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
-  devtools: {
-    enabled: true,
-  },
-
-  css: ['~/assets/css/main.css'],
+  ssr: false,
 
   imports: {
     dirs: [
@@ -19,7 +15,11 @@ export default defineNuxtConfig({
     ],
   },
 
-  ssr: false,
+  devtools: {
+    enabled: true,
+  },
+
+  css: ['~/assets/css/main.css'],
 
   compatibilityDate: '2025-01-15',
 

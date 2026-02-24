@@ -2,5 +2,7 @@
 import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt({
-  'comma-dangle': ['error', 'always-multiline'],
+  rules: {
+    '@stylistic/comma-dangle': ['error', 'always-multiline'],
+  },
 })
