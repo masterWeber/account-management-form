@@ -38,9 +38,8 @@
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui/components/Table.vue'
 import type { Account } from '~/types/Account'
-import { AccountType } from '~/types/AccountType'
 
-const DEFAULT_ACCOUNT_TYPE = AccountType.LOCAL
+const accountStore = useAccountStore()
 
 const columns: TableColumn<Account>[] = [
   {
@@ -91,13 +90,13 @@ const columns: TableColumn<Account>[] = [
   },
 ]
 
-const data = ref<Account[]>([])
-
 function handleAddAccount(): void {
-  data.value.push({tags: [], type: DEFAULT_ACCOUNT_TYPE, login: '', password: ''})
+  accountStore.addEmptyAccount()
 }
 
 function handleDeleteAccount(index: number): void {
-  data.value.splice(index, 1)
+  accountStore.deleteAccount(index)
 }
+
+const {accounts: data} = storeToRefs(accountStore)
 </script>
