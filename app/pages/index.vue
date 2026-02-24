@@ -1,7 +1,9 @@
 <template>
   <div class="page">
     <header class="flex justify-start items-center">
-      <h1 class="m-0 text-3xl font-medium p-4">Учетные записи</h1>
+      <h1 class="m-0 text-3xl font-medium p-4">
+        Учетные записи
+      </h1>
       <UButton
         icon="i-lucide-plus"
         variant="outline"
@@ -131,12 +133,12 @@ const schema = z.object({
   ),
 })
 
-const {accounts} = storeToRefs(accountStore)
+const { accounts } = storeToRefs(accountStore)
 
 type Row = Omit<Account, 'tags'> & { tagsString: string, touched?: Record<string, boolean> }
 
 interface FormState {
-  rows: Row[],
+  rows: Row[]
 }
 
 const formState = reactive<FormState>({
@@ -170,8 +172,8 @@ const columns: TableColumn<Row>[] = [
     accessorKey: 'login',
     header: 'Логин',
     meta: {
-      class: {th: 'w-64'},
-      colspan: {td: (cell: any) => cell.row.original.type === AccountType.LDAP ? '2' : '1'},
+      class: { th: 'w-64' },
+      colspan: { td: cell => cell.row.original.type === AccountType.LDAP ? '2' : '1' },
     },
   },
   {
@@ -180,7 +182,7 @@ const columns: TableColumn<Row>[] = [
     meta: {
       class: {
         th: 'w-64',
-        td: (cell: any) => cell.row.original.type === AccountType.LDAP ? 'hidden' : '',
+        td: cell => cell.row.original.type === AccountType.LDAP ? 'hidden' : '',
       },
     },
   },
@@ -208,8 +210,8 @@ async function handleAddAccount() {
       password: '',
       touched: {},
     })
-  } catch (e) {
-  }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) { /* empty */ }
 }
 
 function handleDeleteAccount(index: number) {
@@ -233,19 +235,19 @@ async function handleBlur(index: number, field?: string) {
       return
     }
 
-    await form.value.validate({name: `rows.${index}`, silent: false})
+    await form.value.validate({ name: `rows.${index}`, silent: false })
 
     const updatedAccount: Account = {
       type: row.type,
       login: row.login,
       password: row.type === AccountType.LOCAL ? (row.password || '') : null,
       tags: row.tagsString
-        ? row.tagsString.split(';').filter(t => t.trim() !== '').map(t => ({text: t.trim()}))
+        ? row.tagsString.split(';').filter(t => t.trim() !== '').map(t => ({ text: t.trim() }))
         : [],
     }
 
     accountStore.updateAccount(index, updatedAccount)
-  } catch (e) {
-  }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) { /* empty */ }
 }
 </script>
