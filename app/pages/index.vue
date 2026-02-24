@@ -145,7 +145,7 @@ interface FormState {
 const formState = reactive<FormState>({
   rows: accounts.value.map((a: Account) => ({
     ...a,
-    tagsString: a.tags.map((t: Tag) => t.text).join('; '),
+    tagsString: a.tags.map((t: Tag) => t.text).join(';'),
     touched: {},
   })),
 })
