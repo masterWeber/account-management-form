@@ -20,7 +20,7 @@
     <UForm
       ref="form"
       :state="formState"
-      :schema="schema"
+      :schema="accountSchema"
       :validate-on="['blur', 'change']"
     >
       <UTable
@@ -103,54 +103,21 @@
 </template>
 
 <script lang="ts" setup>
-import { z } from 'zod'
 import type { TableColumn } from '@nuxt/ui/components/Table.vue'
-import type { Account } from '~/types/Account'
+import type { AccountRow } from '~/types/Form'
 import { AccountType } from '~/types/AccountType'
-import type { Tag } from '~/types/Tag'
 
-const DEFAULT_ACCOUNT_TYPE = AccountType.LOCAL
+const {
+  form,
+  formState,
+  accountTypes,
+  isFormValid,
+  handleAddAccount,
+  handleDeleteAccount,
+  handleBlur,
+} = useAccountForm()
 
-const accountStore = useAccountStore()
-const accountTypes = Object.values(AccountType)
-
-const form = ref()
-
-const schema = z.object({
-  rows: z.array(
-    z.object({
-      type: z.enum(AccountType),
-      login: z.string().trim().min(1).max(100),
-      password: z.string().trim().max(100).nullable(),
-      tagsString: z.string().max(50).optional(),
-    }).refine((data) => {
-      if (data.type === AccountType.LOCAL) {
-        return !!data.password && data.password.trim() !== ''
-      }
-      return true
-    }, {
-      path: ['password'],
-    }),
-  ),
-})
-
-const { accounts } = storeToRefs(accountStore)
-
-type Row = Omit<Account, 'tags'> & { tagsString: string, touched?: Record<string, boolean> }
-
-interface FormState {
-  rows: Row[]
-}
-
-const formState = reactive<FormState>({
-  rows: accounts.value.map((a: Account) => ({
-    ...a,
-    tagsString: a.tags.map((t: Tag) => t.text).join(';'),
-    touched: {},
-  })),
-})
-
-const columns: TableColumn<Row>[] = [
+const columns: TableColumn<AccountRow>[] = [
   {
     accessorKey: 'tagsString',
     header: 'Метки',
@@ -196,59 +163,4 @@ const columns: TableColumn<Row>[] = [
     },
   },
 ]
-
-const isFormValid = computed(() => {
-  return schema.safeParse(JSON.parse(JSON.stringify(formState))).success
-})
-
-async function handleAddAccount() {
-  try {
-    await form.value.validate()
-    formState.rows.push({
-      tagsString: '',
-      type: DEFAULT_ACCOUNT_TYPE,
-      login: '',
-      password: '',
-      touched: {},
-    })
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) { /* empty */ }
-}
-
-function handleDeleteAccount(index: number) {
-  formState.rows.splice(index, 1)
-  accountStore.deleteAccount(index)
-}
-
-async function handleBlur(index: number, field?: string) {
-  try {
-    const row = formState.rows[index]
-    if (!row) return
-
-    if (field) {
-      if (!row.touched) row.touched = {}
-      row.touched[field] = true
-    }
-
-    const isTouched = row.touched?.login || row.touched?.password
-
-    if (!isTouched) {
-      return
-    }
-
-    await form.value.validate({ name: `rows.${index}`, silent: false })
-
-    const updatedAccount: Account = {
-      type: row.type,
-      login: row.login,
-      password: row.type === AccountType.LOCAL ? (row.password || '') : null,
-      tags: row.tagsString
-        ? row.tagsString.split(';').filter(t => t.trim() !== '').map(t => ({ text: t.trim() }))
-        : [],
-    }
-
-    accountStore.updateAccount(index, updatedAccount)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) { /* empty */ }
-}
 </script>

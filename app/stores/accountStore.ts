@@ -16,6 +16,10 @@ export const useAccountStore = defineStore('account', {
       this.accounts[index] = { ...account }
     },
 
+    addAccount(account: Account): void {
+      this.accounts.push({ ...account })
+    },
+
     deleteAccount(index: number): void {
       this.accounts.splice(index, 1)
     },
